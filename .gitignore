@@ -1,1 +1,4 @@
 node_modules
+output.txt
+config.json
+.DS_STORE

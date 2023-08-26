@@ -1,7 +1,22 @@
 {
+  "name": "git-hook-processing",
+  "version": "1.0.0",
+  "description": "A project for processing files before git commits using hooks.",
+  "main": "script.js",
+  "scripts": {
+    "process": "node script.js",
+    "setup-hooks": "cp hooks/pre-commit .git/hooks/ && chmod +x .git/hooks/pre-commit"
+  },
+  "author": "Your Name",
+  "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1"
+  },
+  "devDependencies": {
+    "@types/node": "^16.3.1",
     "escodegen": "^2.1.0",
     "esprima": "^4.0.1",
-    "estraverse": "^5.3.0"
+    "estraverse": "^5.3.0",
+    "ignore": "^5.2.4"
   }
 }
