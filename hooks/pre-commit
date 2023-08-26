@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Stash all changes in the working directory before processing
+git stash save "pre-commit hook stash"
+
+# Apply stashed changes to continue processing on them
+git stash apply
+
+node replaceSensitiveInfo.js
+
+
+# Check the exit status of our script
+if [ $? -ne 0 ]; then
+  echo "Script found issues that need fixing before commit!"
+  exit 1
+fi
+
+# Add changes made by the script to the commit
+git add -A
+
+# Restore the original changes by popping the stash
+git stash pop
+
+# If there's a merge conflict (i.e., a discrepancy between processed and original content), we can auto-resolve using the original content
+if [[ $? -ne 0 ]]; then
+    git checkout --theirs .
+    git add -A
+fi
+
+# Let the commit proceed
+exit 0
