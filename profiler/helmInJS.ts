@@ -53,24 +53,20 @@ const runProcess = async () => {
   } else if (failCount >= 10) {
     log('Process has failed 10 times, sending email notification...', logFile);
     
-    const company = "YourCompany";  // replace with your actual company name or other relevant info
-    const linkClicked = "LinkDetails";  // replace with actual link details or other relevant info
-    const position = "PositionDetails";  // replace with actual position details or other relevant info
-    
-    await sendEmail(company, linkClicked, position);
+    await sendEmail('Helm in JS -- Process failed 10 times');
   }
 };
 
 
-const sendEmail = async (company: string, linkClicked: string, position: string): Promise<void> => {
+const sendEmail = async (message: string): Promise<void> => {
     const SENDGRID_API_KEY: string = process.env.SENDGRID_API_KEY as string;
   
     try {
       const data = {
         personalizations: [{ to: [{ email: 'jamesphilhower@gmail.com' }] }],
         from: { email: 'jamesphilhower@gmail.com' },
-        subject: `${company} - ${linkClicked}`,
-        content: [{ type: 'text/plain', value: `Company: ${company}\nPosition: ${position}\nClicked at: ${new Date().toString()}` }]
+        subject: `Helm in JS -- ${message}`,
+        content: [{ type: 'text/plain', value: `Helm in JS -- ${message}. Failure occurred at ${new Date().toDateString}` }]
       };
   
       const response: AxiosResponse = await axios.post('https://api.sendgrid.com/v3/mail/send', data, {

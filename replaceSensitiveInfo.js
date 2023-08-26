@@ -30,33 +30,41 @@ const processFile = (filePath) => {
     console.log('Processing file:', filePath)
     const content = fs.readFileSync(filePath, 'utf-8');
 
+    // Flag items
+    for (const [type, regex] of Object.entries(regexPatterns)) {
+        const matches = content.match(regex);
+        if (matches) {
+            let notify = true
+            // Skip items from leaveAlone section
+            for (const item of config.leaveAlone) {
+                if (content.includes(item)) {
+                    notify = false
+                }
+            }
+            for (const item of Object.keys(config.conversions)) {
+                if (content.includes(item)) {
+                    notify = false
+                }
+            }
+            if (notify){
+                console.log(`Found potential ${type} in ${filePath}:`, matches);
+            }
+        }
+    }
+   
+    
     let updatedContent = content;
 
     // // Handle conversions
-    // for (const [oldString, newString] of Object.entries(config.conversions)) {
-    //     const regex = new RegExp(oldString, 'g');
-    //     updatedContent = updatedContent.replace(regex, newString);
-    // }
-
-    // Flag items
-    for (const [type, regex] of Object.entries(regexPatterns)) {
-        const matches = updatedContent.match(regex);
-        if (matches) {
-            console.log(`Found potential ${type} in ${filePath}:`, matches);
-        }
+    for (const [oldString, newString] of Object.entries(config.conversions)) {
+        updatedContent = updatedContent.replace(oldString, newString);
     }
 
-    // Flag items from leaveAlone section
-    for (const item of config.leaveAlone) {
-        if (updatedContent.includes(item)) {
-            console.log(`Found item from leaveAlone in ${filePath}: ${item}`);
-        }
+    if (content != updatedContent) {
+        //fs.writeFileSync(filePath, updatedContent, 'utf-8');
+        console.log(`Updated ${filePath}`);
+        console.log(updatedContent)
     }
-
-    // if (content !== updatedContent) {
-    //     fs.writeFileSync(filePath, updatedContent, 'utf-8');
-    //     console.log(`Updated ${filePath}`);
-    // }
 };
 
 const walkDirectory = (dir) => {
